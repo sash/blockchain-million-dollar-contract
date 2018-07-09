@@ -8,9 +8,24 @@
     "css-loader": "^0.28.11",
     "ethers": "^3.0.25",
     "json-loader": "^0.5.7",
+    "node-sass": "^4.9.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
+    "react-router-dom": "^4.3.1",
+    "sass-loader": "^7.0.3",
+    "solidity-coverage": "^0.5.5",
     "style-loader": "^0.21.0",
-    "webpack": "^4.15.1"
+    "truffle": "^4.1.13",
+    "truffle-contract": "^3.0.6",
+    "truffle-privatekey-provider": "^0.1.0",
+    "truffle-solidity-loader": "^0.0.8",
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8"
+  },
+  "scripts": {
+    "test:coverage": "solidity-coverage"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0"
   }
 }

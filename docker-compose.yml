@@ -1,0 +1,16 @@
+version: '2'
+services:
+  ganache:
+    image: trufflesuite/ganache-cli
+    entrypoint: node ./build/cli.node.js -h 0.0.0.0
+    ports:
+       - 8545:8545
+
+  coverage:
+    image: node
+    volumes:
+      - .:/app
+    working_dir: /app
+    entrypoint: node /app/node_modules/.bin/testrpc-sc --port 8555 -h 0.0.0.0 -l 0xfffffffffff -g 0x01
+    ports:
+       - 8555:8555
