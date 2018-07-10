@@ -5,10 +5,11 @@ $size: 11px;
   display: flex;
   flex-direction: column;
   border: 1px solid lightblue;
-  &--row{
+  &__row{
     display: flex;
   }
-  &--cell{
+  &__cell{
+    cursor: pointer;
     width: $size;
     height: $size;
     font-size: $size;
@@ -17,5 +18,8 @@ $size: 11px;
     align-content: center;
     text-align: center;
     line-height: $size;
+    &--selected{
+      background-color: yellow;
+    }
   }
 }

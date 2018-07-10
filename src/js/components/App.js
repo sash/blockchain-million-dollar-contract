@@ -43,7 +43,7 @@ class App extends React.Component{
 
                 <hr/>
 
-                <Route exact path="/" component={Home}/>
+                <Route exact path="/" render={routeProps => <Home {...routeProps} contract={this.props.contract}/>}/>
                 <Route path="/about" component={About}/>
                 <Route path="/topics" component={Topics}/>
             </div>
@@ -52,11 +52,11 @@ class App extends React.Component{
     }
 }
 
-const Home = () => (
+const Home = ({contract}) => (
     <div>
         <p>Buy your box of history! Available blocks are highlighted in green;</p>
         <div style={{display: 'flex', justifyContent:'center'}}>
-        <Grid size={100}/>
+        <Grid size={100} contract={contract}/>
         </div>
     </div>
 );

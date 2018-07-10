@@ -28,7 +28,7 @@ describe("Utils", () => {
     });
 });
 contract('MFC', function(accounts) {
-    const [firstAccount, secondAccount] = accounts;
+    const [firstAccount, secondAccount, thirdAccount] = accounts;
 
     let mfc;
     beforeEach(async () => {
@@ -45,13 +45,13 @@ contract('MFC', function(accounts) {
 
 
         });
-        it('can read the full board (bought)', async () => {
-
-            // console.log(mfc);
-
+        it("can read box price", async () => {
+            const price = await mfc.BOX_PRICE({from: secondAccount});
+            assert.equal(1 * FINNEY, price);
+        });
+        it('can listen for bought events', async () => {
 
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
-            // await mfc.publishBlock(0, 0, "A B", "", "0xff0000", {from: secondAccount});
             let bought = [];
             mfc.BoxBought({fromBlock: 0, toBlock: 'latest'}, function (err, event) {
                 bought.push(event.args['x'].toNumber() + 'x' + event.args['y'].toNumber());
@@ -64,10 +64,7 @@ contract('MFC', function(accounts) {
             assert.equal(4, bought.length);
 
         });
-        it('can read the full board (published)', async () => {
-
-            // console.log(mfc);
-
+        it('can listen for published events', async () => {
 
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
             await mfc.publishBlock(0, 0, "A B", "", "0xff0000", {from: secondAccount});
@@ -91,7 +88,23 @@ contract('MFC', function(accounts) {
                 assert.ok(/revert/.test(e.message));
             }
 
-        })
+        });
+        it("can read the buyers array", async() => {
+            await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
+            await mfc.buy(5, 0, 2, 2, {from: thirdAccount, value: 4 * FINNEY});
+            let buyers = await mfc.boardBuyers();
+            assert.equal(100*100, buyers.length);
+            assert.equal(secondAccount,buyers[0] );
+            assert.equal(thirdAccount, buyers[105] );
+            assert.equal('0x0000000000000000000000000000000000000000', buyers[2] );
+
+        });
+        it("can read the board chars", async () => {
+            await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
+            await mfc.publishBlock(0, 0, "A B", "", "0xff0000", {from: secondAccount});
+            let board = await mfc.boardChars({gas: 7000000});
+            console.log(board);
+        });
     });
 
     describe("Buy",  () => {
@@ -166,6 +179,7 @@ contract('MFC', function(accounts) {
             assert.equal(secondAccount, buyer);
 
         });
+
         it("can't publish others box", async () => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
             await mfc.buy(2, 0, 2, 2, {from: firstAccount, value: 4 * FINNEY});
