@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./SafeMath.sol";
 import "./strings.sol";
+import "./StringUtils.sol";
 
 
 contract MFC {
@@ -55,14 +56,8 @@ contract MFC {
     }
 
     modifier charIsValid(bytes4 char){
-        require(utfStringLength(char) == 1);
+        require(StringUtils.utfStringLength(char) == 1);
         // Char is only one char
-        _;
-    }
-
-    modifier colourIsValid(bytes3 colour){
-        require(colour >= 0 && colour <= 0xffffff);
-        // Valid colour
         _;
     }
 
@@ -79,7 +74,6 @@ contract MFC {
     function publish(uint16 x, uint16 y, bytes4 char, string attachment, bytes3 colour)
     locationIsValid(x, y)
     charIsValid(char)
-    colourIsValid(colour)
     public {
         uint index = y.mul(BOARD_LENGTH).add(x);
         require(buyers[index] == msg.sender);
@@ -96,7 +90,6 @@ contract MFC {
      */
     function publishBlock(uint16 start_x, uint16 start_y, string _chars, string attachment, bytes3 colour)
     locationIsValid(start_x, start_y)
-    colourIsValid(colour)
     public {
         strings.slice memory _charsSlice = _chars.toSlice();
         uint cnt = _charsSlice.count("\n".toSlice()) + 1;
@@ -116,11 +109,10 @@ contract MFC {
 //            emit debug(line.split(" ".toSlice()).toString());
             strings.slice memory onechar = line.split(" ".toSlice());
 
-//            emit debug(onechar.toString());
-//            bytes4 byt = convertBytesToBytes4(bytes(onechar.toString()));
-//            emit debug(byt);
-//            emit debug(bytes(onechar.toString()));
-            chars[index] = Char(bytes4(stringToBytes32(onechar.toString())), storeAttachment(attachment), colour);
+            bytes4 char = bytes4(stringToBytes32(onechar.toString()));
+
+            require(StringUtils.utfStringLength(char) <= 1);
+            chars[index] = Char(char, storeAttachment(attachment), colour);
             emit BoxPublished(uint16(x.add(start_x)), uint16(y.add(start_y)), msg.sender, chars[index].char, colour, attachment);
         }
     }
@@ -212,44 +204,4 @@ contract MFC {
         selfdestruct(owner);
     }
 
-    function utfStringLength(bytes4 str) private pure returns (uint length) {
-        uint i = 0;
-        bool padding = false;
-
-        while (i < str.length)
-        {
-            if (str[i] == 0x0) {
-                i += 1;
-                padding = true;
-                continue;
-                // do not increment length
-            }
-            if (padding && str[i] != 0x0){
-                revert();
-            }
-            if (str[i] >> 7 == 0) {
-                i += 1;
-                padding = false;
-            }
-            else if (str[i] >> 5 == 0x6) {
-                i += 2;
-                padding = false;
-            }
-            else if (str[i] >> 4 == 0xE) {
-                i += 3;
-                padding = false;
-            }
-            else if (str[i] >> 3 == 0x1E) {
-                i += 4;
-                padding = false;
-            }
-            else {
-                //For safety
-                i += 1;
-                padding = false;
-            }
-
-            length++;
-        }
-    }
 }
