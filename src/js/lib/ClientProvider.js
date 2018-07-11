@@ -1,41 +1,51 @@
 import ethers from 'ethers';
+import config from '../config';
 
-var providers = ethers.providers;
+let providers = ethers.providers;
 
 // Connect to Ropsten (the test network)
-
+let web3Provider, fallbackProvider;
+if (config.network === 'ropsten') {
 // You may specify any of:
 // - boolean; true = ropsten, false = homestead
 // - object; { name: 'ropsten', chainId: 3 } (see ethers.networks);
 // - string; e.g. 'homestead', 'ropsten', 'rinkeby', 'kovan'
-var network = providers.networks.ropsten;
+    let network = providers.networks.ropsten;
 
 // Connect to INFUA
-var infuraProvider = new providers.InfuraProvider(network);
+    let infuraProvider = new providers.InfuraProvider(network);
 
 // Connect to Etherscan
-var etherscanProvider = new providers.EtherscanProvider(network);
-
+    let etherscanProvider = new providers.EtherscanProvider(network);
 
 
 // // Connect to a local Parity instance
 // var provider = new providers.JsonRpcProvider('http://localhost:8545', network);
-var fallbackProvider;
 // Connect to an injected Web3's provider (e.g. MetaMask)
-if (typeof web3 !== 'undefined'){
-    var web3Provider = new providers.Web3Provider(web3.currentProvider, network);
-    fallbackProvider = new providers.FallbackProvider([
-        web3Provider,
-        infuraProvider,
-        etherscanProvider
-    ]);
 
-} else {
-    fallbackProvider = new providers.FallbackProvider([
-        infuraProvider,
-        etherscanProvider
-    ]);
-    var web3Provider = null;
+
+    if (typeof web3 !== 'undefined') {
+        web3Provider = new providers.Web3Provider(web3.currentProvider, network);
+        fallbackProvider = new providers.FallbackProvider([
+            web3Provider,
+            infuraProvider,
+            etherscanProvider
+        ]);
+
+    } else {
+        fallbackProvider = new providers.FallbackProvider([
+            infuraProvider,
+            etherscanProvider
+        ]);
+        web3Provider = null;
+    }
+} else { // Local node
+    fallbackProvider = new providers.JsonRpcProvider('http://localhost:8545');
+    if (typeof web3 !== 'undefined') {
+        web3Provider = new providers.Web3Provider(web3.currentProvider);
+    } else {
+        web3Provider = null;
+    }
 }
 
 class ClientProvider{
@@ -65,7 +75,7 @@ class ClientProvider{
 
 
     async watchMetamask(){
-        const accounts = await web3Provider.listAccounts();
+        const accounts = await this.web3Provider.listAccounts();
         if (accounts.length > 0){
             if (this.currentAccount !== accounts[0]){
                 this.currentAccount = accounts[0];

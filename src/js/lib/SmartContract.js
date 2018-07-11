@@ -1,322 +1,52 @@
 import ethers from 'ethers';
 // import definition from '../../../build/contracts/MFC.json';
+import config from '../config'
+import helpers from './helpers';
 
 import ClientProvider from './ClientProvider';
 
-let definition = {
-    abi: [
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "name": "board",
-            "outputs": [
-                {
-                    "name": "char",
-                    "type": "bytes4"
-                },
-                {
-                    "name": "attachmentIndex",
-                    "type": "uint256"
-                },
-                {
-                    "name": "colour",
-                    "type": "bytes3"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "BOX_PRICE",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "name": "_BOX_PRICE",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "name": "x",
-                    "type": "uint16"
-                },
-                {
-                    "indexed": false,
-                    "name": "y",
-                    "type": "uint16"
-                },
-                {
-                    "indexed": false,
-                    "name": "buyer",
-                    "type": "address"
-                }
-            ],
-            "name": "BoxBought",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "name": "x",
-                    "type": "uint16"
-                },
-                {
-                    "indexed": false,
-                    "name": "y",
-                    "type": "uint16"
-                },
-                {
-                    "indexed": false,
-                    "name": "owner",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "name": "char",
-                    "type": "bytes4"
-                },
-                {
-                    "indexed": false,
-                    "name": "colour",
-                    "type": "bytes3"
-                },
-                {
-                    "indexed": false,
-                    "name": "attachment",
-                    "type": "string"
-                }
-            ],
-            "name": "BoxPublished",
-            "type": "event"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "name": "x",
-                    "type": "uint16"
-                },
-                {
-                    "name": "y",
-                    "type": "uint16"
-                }
-            ],
-            "name": "read",
-            "outputs": [
-                {
-                    "name": "char",
-                    "type": "bytes4"
-                },
-                {
-                    "name": "attachment",
-                    "type": "string"
-                },
-                {
-                    "name": "colour",
-                    "type": "bytes3"
-                },
-                {
-                    "name": "buyer",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "boardBuyers",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "address[10000]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "boardChars",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bytes4[10000]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "boardAttachments",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bool[10000]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "boardColours",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "bytes3[10000]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "start_x",
-                    "type": "uint16"
-                },
-                {
-                    "name": "start_y",
-                    "type": "uint16"
-                },
-                {
-                    "name": "length",
-                    "type": "uint16"
-                },
-                {
-                    "name": "height",
-                    "type": "uint16"
-                }
-            ],
-            "name": "buy",
-            "outputs": [],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "x",
-                    "type": "uint16"
-                },
-                {
-                    "name": "y",
-                    "type": "uint16"
-                },
-                {
-                    "name": "char",
-                    "type": "bytes4"
-                },
-                {
-                    "name": "attachment",
-                    "type": "string"
-                },
-                {
-                    "name": "colour",
-                    "type": "bytes3"
-                }
-            ],
-            "name": "publish",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "name": "start_x",
-                    "type": "uint16"
-                },
-                {
-                    "name": "start_y",
-                    "type": "uint16"
-                },
-                {
-                    "name": "_chars",
-                    "type": "string"
-                },
-                {
-                    "name": "attachment",
-                    "type": "string"
-                },
-                {
-                    "name": "colour",
-                    "type": "bytes3"
-                }
-            ],
-            "name": "publishBlock",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [],
-            "name": "kill",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }
-    ],
-    networks:{
-        "3":{
-            address:"0xaf7ca8d710b2304089c2265c44b5210a486a063b",
-        }
-    }
-};
 
 class SmartContract{
     constructor(clientProvider){
+        this.bought = []
+        // this.currentAccountBought = []
+        this.published = []
         this.provider = clientProvider;
-        this.contractReadOnly = new ethers.Contract(definition.networks["3"].address, definition.abi, this.provider.provider);
+        this.contractReadOnly = new ethers.Contract(config.MFC.address[config.network], config.MFC.abi, this.provider.provider);
+        this.contractReadOnly.onboxbought = (x, y, buyer) => {
+            this.bought.push({x, y, buyer});
+            window.document.dispatchEvent(new CustomEvent('mfcBoxBought', {'detail': {x, y, buyer}}));
+        };
+        // uint16 x, uint16 y, address owner, bytes4 char, bytes3 colour, string attachment
+        this.contractReadOnly.onboxpublished = (x, y, owner, char, colour, attachment) => {
+            this.published.push({x, y, owner, char, colour, attachment});
+            window.document.dispatchEvent(new CustomEvent('mfcBoxPublished', {'detail': {
+                    x,
+                    y,
+                    owner,
+                    char,
+                    colour,
+                    attachment
+            }}));
+        };
+        this.provider.provider.resetEventsBlock(config.MFC.block[config.network]); // replay all events from the contract creation.
+
         if (this.provider.isEthersEnabledBrowser()){
-            this.contractWrite = new ethers.Contract(definition.networks["3"].address, definition.abi, this.provider.web3Provider.getSigner());
+            this.contractWrite = new ethers.Contract(config.MFC.address[config.network], config.MFC.abi, this.provider.web3Provider.getSigner());
         }
+
+    }
+
+    onBought(callback){
+        window.document.addEventListener('mfcBoxBought', function (customEvent) {
+            callback(customEvent);
+        });
+    }
+
+    onPublished(callback) {
+        window.document.addEventListener('mfcBoxPublished', function (customEvent) {
+            callback(customEvent);
+        });
     }
 
     async buy(x, y, length, height){
@@ -335,6 +65,19 @@ class SmartContract{
             console.log(e);
         }
     }
+
+    async publish(x, y, chars, colour, attachment){
+        console.log(x, y, chars, colour, attachment)
+        let tx;
+        if (chars.length === 1){
+            tx = await this.contractWrite.publish(x, y, helpers.toHex(chars), attachment, colour);
+        } else {
+            tx = await this.contractWrite.publishBlock(x, y, chars, attachment, colour);
+        }
+        console.log(tx);
+    }
+
+
 }
 
 

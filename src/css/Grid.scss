@@ -1,10 +1,32 @@
 $size: 11px;
 .Grid {
+  position: relative;
   width: $size*100;
   height: $size*100;
   display: flex;
   flex-direction: column;
   border: 1px solid lightblue;
+  &__loading{
+    display: flex;
+    position: absolute;
+    top:0;
+    left: 0;
+    right:0;
+    bottom: 0;
+    text-align: center;
+    vertical-align: center;
+    background-color: rgba(50, 50, 50, 0.3);
+    line-height: 100%;
+    align-items: center;
+    align-content: center;
+    span {
+      align-items: center;
+      text-align: center;
+      width:100%;
+      font-size: 300%;
+      color: white;
+    }
+  }
   &__row{
     display: flex;
   }
@@ -14,12 +36,24 @@ $size: 11px;
     height: $size;
     font-size: $size;
     //border: 1px solid red;
-    box-sizing: content-box;
+    box-sizing: border-box;
     align-content: center;
     text-align: center;
     line-height: $size;
-    &--selected{
+    background-color: lightgreen;
+    border: 1px solid #eeeeee;
+
+    &--bought {
+      background-color: white;
+      border: 0px solid transparent;
+    }
+    &--owned{
+      background-color: pink;
+      border: 1px solid #eeeeee;
+    }
+    &--selected {
       background-color: yellow;
+      border: 1px solid #eeeeee;
     }
   }
 }

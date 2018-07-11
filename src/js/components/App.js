@@ -1,7 +1,7 @@
 import React from "react";
 import {HashRouter as Router, Route, Link} from "react-router-dom";
-import "./../../css/nav.scss";
 import Grid from "./Grid.js";
+import Publish from './Publish';
 
 class App extends React.Component{
     constructor(props){
@@ -18,33 +18,37 @@ class App extends React.Component{
     }
 
     render(){
-
         return <Router>
             <div>
-                {!this.props.ethBrowser && <div className="callout warning">
+                {!this.props.ethBrowser &&
+                <div className="callout alert">
                     <h5>This browser is not ethereum enabled!</h5>
-                    <p>Please use Google Crome + MetaMask, Mist or Parity</p>
+                    <p>Please use Google Chrome + MetaMask, Mist or Parity</p>
                 </div>}
                 {this.props.account &&
-                <div>{this.props.account} - {this.state.balance} tETH</div>}
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/about">About</Link>
-                        </li>
-                        <li>
-                            <Link to="/topics">Topics</Link>
-                        </li>
-                    </ul>
-                </nav>
+                <div>{this.props.account &&
+                    <span>
+                <span className="label primary">{this.props.account}</span>&nbsp;
+                <span className="label secondary">{this.state.balance} tETH</span>
+                    </span>
+                }</div>}
+                {!this.props.account && this.props.ethBrowser &&
+                <div className="callout warning">
+                    <h5>Your account is locked!</h5>
+                    <p>Please unlock your account in order to use the app</p>
+                </div>
+                }
+
 
                 <hr/>
 
-                <Route exact path="/" render={routeProps => <Home {...routeProps} contract={this.props.contract}/>}/>
-                <Route path="/about" component={About}/>
+                <Route exact path="/" render={routeProps => <Home {...routeProps} contract={this.props.contract} account={this.props.account}/>}/>
+                <Route path="/publish/:x/:y/:length/:height"
+                       render={routeProps =>
+                           <Publish {...routeProps}
+                                 contract={this.props.contract}
+                                 account={this.props.account}
+                           />}/>
                 <Route path="/topics" component={Topics}/>
             </div>
         </Router>
@@ -52,20 +56,16 @@ class App extends React.Component{
     }
 }
 
-const Home = ({contract}) => (
+const Home = ({contract, account}) => (
     <div>
-        <p>Buy your box of history! Available blocks are highlighted in green;</p>
+        <p>Buy your blocks of the blockchain history! Available blocks are highlighted in green! Your purchased blocks are ping and you can publish content to them</p>
         <div style={{display: 'flex', justifyContent:'center'}}>
-        <Grid size={100} contract={contract}/>
+        <Grid size={100} contract={contract} account={account}/>
         </div>
+
     </div>
 );
 
-const About = () => (
-    <div>
-        <h2>About</h2>
-    </div>
-);
 
 const Topics = ({match}) => (
     <div>
