@@ -26,7 +26,9 @@ Instead of offering pixes, you buy boxes that you can control the color of and y
 Take it for a spin:
 1. Open chrome + safari. Leave the safari open to observe changes.
 2. Purchase a new block of boxes by selecting it. The price of the block is set at 0.1 ether (in order for the autor to get 1M finney!). Look at the account of the contract author - it is credited!
-3. Publish content (use PFD as attachment). The attachment is visible by everyone.
+3. Change to another account and to the same.
+4. Lock your metamask.
+5. Publish content (use PFD as attachment). The attachment is visible by everyone.
 
 Look at che contact:
 1. The storage: array of Box structs representing the board. array of buyers
@@ -34,7 +36,7 @@ Look at che contact:
 3. The events: BoxBought, BoxPurchased used for creating the board in web
 
 What we have:
-* 100% unit test code coverage of the contract.
+* 100% unit test code coverage of the contract. Open `coverage\index.html`
 * Pure frontend app implemented in ReactJS, built with WebPack. Can be distributed via IPFS. Lets do that now!
 * Ethers.js
 * Metamask integration (no custom wallet)

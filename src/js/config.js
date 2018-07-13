@@ -2,22 +2,23 @@
  *
  * @type {{network: string, MFC: {address: {private: string, ropsten: string}, block: {private: number, ropsten: number}, abi: *[]}, ipfs: {gateway: string, server: {host: string, port: number}}}}
  *
- * ganache_1   | (0) 0x36fbeff443a2fce1c77eee1136b348e608d86feaba6e84c89deabd428d7ee4aa
- ganache_1   | (1) 0x0d006710dc5de7e59583fd5c662fe5260a19075fce5cb55a9cd942699052429b
- ganache_1   | (2) 0xb2d3a39acff82ee75a3bcf2803a1a8699ff9cdfcccf0c3db6f004a7cca9781ca
- ganache_1   | (3) 0x6a0f5c3349c19e5ddea60428ae3dc09ae4c2612cb3a58fd8110731479be3f0d1
- ganache_1   | (4) 0x10a2192eca959e980c8ba81b1db5241196f78e829d80c3042c40d7222190d419
- ganache_1   | (5) 0x481ca18da7e9ba15a5b83558eaa12075dec10a0ad09fdce5f77d374a560ec119
- ganache_1   | (6) 0x43159c50405b7d219bbcdc22d4de66791de61956988111ca4d6e292b659ee84b
- ganache_1   | (7) 0xb28e0ba7c57f3fd70938aed75c104364d66773d6052fc74de84253783640c045
- ganache_1   | (8) 0x77317b1d24c6b5c1ee4d95c3ff054631367d140ff34938c844513c39cd92d23d
- ganache_1   | (9) 0x402ab048a7f96cfeba583a667a08a589c5e3d930e641e2050df8cdcdc2273031
+ *
+ (0) 0x2dd709650e3463343d0ee76c7bcf8799f499b4dbf226f09824acba601214b93e
+ (1) 0x53dec80aab5f385b0832f1d5ec79c9e54ca8a0b446bca71b6b810be5246b8034
+ (2) 0xa9d0056ab6709cf4a00a71a88a4fba2f24337bb24ba148d35a843b73108bdb80
+ (3) 0x14206a1475c14e21f8b23bd9fbea8d4d87970bf1afe93f4da06e2556526c8779
+ (4) 0x7e50623f51a32a31172570ae7ae3981afcf677d88a8f91fca67f548b17fedefd
+ (5) 0x4be55d98e42698e308ecdb8db778d66e3f7e13d355f57b848273d7eed2f33fff
+ (6) 0x8b672ff07dd0db74eaf616d949cd324190bf9b1e72a1ba1c994301e9c3596622
+ (7) 0x106f629d83801d3fd8dfdc420e2d54f7abbaa8ea464c59fb9a0e944c0244024c
+ (8) 0xb4f63fe3650b4a6a20a118ea7ee5ba9493ffda9f74e7cfda4d32c641176593e7
+ (9) 0xa673541f173c1015b879b65450e9eacf8f8b3113563e4c9cc527842210ebfd4d
  */
 module.exports = {
     network: 'private',
     MFC:{
         address: {
-            private: '0x042fca9b16745fe543ffbb01743c6247b1ac0739',
+            private: '0x20b3b1a385519e28149f2ad1a08bc746e392ce8d',
             ropsten: '0xaf7ca8d710b2304089c2265c44b5210a486a063b',
         },
         block: {
