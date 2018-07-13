@@ -14,12 +14,13 @@
  (8) 0xb4f63fe3650b4a6a20a118ea7ee5ba9493ffda9f74e7cfda4d32c641176593e7
  (9) 0xa673541f173c1015b879b65450e9eacf8f8b3113563e4c9cc527842210ebfd4d
  */
+
 module.exports = {
-    network: 'private',
+    network: 'ropsten',
     MFC:{
         address: {
             private: '0x20b3b1a385519e28149f2ad1a08bc746e392ce8d',
-            ropsten: '0xaf7ca8d710b2304089c2265c44b5210a486a063b',
+            ropsten: '0xa10fbb3fbdf0fe9d40cc546d281a40b2679cdbdb',
         },
         block: {
             private: 0,
@@ -282,7 +283,7 @@ module.exports = {
         ]
     },
     ipfs:{
-        gateway: 'http://localhost:8081/ipfs/',
+        gateway: 'https://ipfs.io/ipfs/',
         server:{
             host: 'localhost',
             port: 5001,

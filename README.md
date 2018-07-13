@@ -23,19 +23,19 @@ A clone of http://www.milliondollarhomepage.com/. 1000x1000 pixels for sale each
 
 Instead of offering pixes, you buy boxes that you can control the color of and you can use a single UTF8 character in each box. You can also attach a file (stored on ipfs) that will be shown when the block is clicked.
 
-Take it for a spin:
+## Take it for a spin:
 1. Open chrome + safari. Leave the safari open to observe changes.
 2. Purchase a new block of boxes by selecting it. The price of the block is set at 0.1 ether (in order for the autor to get 1M finney!). Look at the account of the contract author - it is credited!
 3. Change to another account and to the same.
 4. Lock your metamask.
 5. Publish content (use PFD as attachment). The attachment is visible by everyone.
 
-Look at che contact:
+## Look at che contact:
 1. The storage: array of Box structs representing the board. array of buyers
 2. The methods: buy, publish, publishBatch, and the debug only read
 3. The events: BoxBought, BoxPurchased used for creating the board in web
 
-What we have:
+## What we have:
 * 100% unit test code coverage of the contract. Open `coverage\index.html`
 * Pure frontend app implemented in ReactJS, built with WebPack. Can be distributed via IPFS. Lets do that now!
 * Ethers.js
@@ -44,9 +44,13 @@ What we have:
 * Optimizations: Colours are stored as `bytes3` and characters are stored as `bytes4`. Attachments are expected to be the same for many boxes, so they are optimized too.
 
 
-Known limitations:
+## Known limitations:
 * Publishing and buying large blocks runs out of gas. Buy can be refactored to store only the purchased blocks (instead of boxes). That will reduce the gas for buy.
 * I had planned to use pure JS implementation of zip and allow for zipped static webpages to be published via the attachment. The concept will work.
+
+## We are live!
+
+Go to https://bit.ly/2NclFSx and start publishing to Ropsten now!
 
 # Demo preparations
 * `docker-compose restart` & copy private keys of ganache

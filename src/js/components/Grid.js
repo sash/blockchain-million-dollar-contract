@@ -208,6 +208,8 @@ export default class Grid extends React.Component{
 
                                 style={{minWidth: '800px'}}
                                 >
+                                <a target="_blank" href={config.ipfs.gateway + this._isPublished(x, y).attachment}>⧉</a>
+                                <a style={{float:'right'}} href="#" onClick={() => this.setState({open: false})}>❌</a>
                                 <div className="responsive-embed">
                                     <iframe width="100%" height="100%" src={config.ipfs.gateway + this._isPublished(x, y).attachment}
                                             frameBorder="0" allowFullScreen></iframe>

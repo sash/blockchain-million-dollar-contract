@@ -74,7 +74,9 @@ export default class Publish extends React.Component {
                 Type in your chars
                 <textarea ref={input => this.chars = input} rows={this.props.match.params.height}
                           cols={this.props.match.params.length}
-                          placeholder={this.props.match.params.length + " chars per line, " + this.props.match.params.height + ' lines'}></textarea>
+                          placeholder={this.props.match.params.length + " chars per line, " + this.props.match.params.height + ' lines'}
+                          style={{fontFamily: 'monospace, monospace'}}
+                ></textarea>
             </label>
             <label>
                 Colour

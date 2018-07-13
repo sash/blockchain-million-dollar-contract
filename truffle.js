@@ -32,7 +32,7 @@ module.exports = {
           network_id: 3,
           provider: () => {
               const PrivateKeyProvider = require("truffle-privatekey-provider");
-              const ropstenPrivateKey = "AC9345C8F7BAFF060FC65E9F46C82412499A3A544CFFAC44D87F1E5E4F4E3F2F";
+              const ropstenPrivateKey = "xxxx";
               const ropstenProvider = new PrivateKeyProvider(ropstenPrivateKey, "https://ropsten.infura.io/QqFmemiGVhIX9ku162hM")
 
               return ropstenProvider;
