@@ -1,19 +1,23 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
+import ipfsAPI from 'ipfs-api';
+import runes from 'runes';
+import ipfsAdd from '../lib/IPFS';
 
 export default class Publish extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.onPurchase = this.onPurchase.bind(this);
+        this.onPublish = this.onPublish.bind(this);
 
         this.state={
             error: false
         }
     }
 
-    onPurchase(event) {
+    onPublish(event) {
+
         const lines = this.chars.value.split(/\n/);
         const chars = [];
         if (lines.count > this.props.match.params.height) {
@@ -22,25 +26,47 @@ export default class Publish extends React.Component {
         }
         let hasError = false;
         lines.forEach((line, i) => {
-            if (line.length > this.props.match.params.length) {
+            if (runes(line).length > this.props.match.params.length) {
                 this.setState({error: `Too many chars on line ${i}!`});
                 hasError = true;
             }
-            chars.push(line.split("").join(" "));
+            chars.push(runes(line).join("\t"));
         });
-        if (hasError){
+
+        if (hasError) {
             return true;
         }
+
         this.setState({error: false});
-        debugger;
-        this.props.contract.publish(this.props.match.params.x, this.props.match.params.y,  chars.join("\n"), this.colour.value.replace('#', '0x'), this.attachment.value)
-        // console.log(chars.join("\n"), this.colour.value, this.attachment.value);
+
+        // Read attachment
+        let files = this.attachment.files; // FileList object
+        // use the 1st file from the list
+        let f = files[0];
+        (async () => {
+            let attachment = "";
+            if (f) {
+                attachment = await ipfsAdd(f);
+            }
+            let tx;
+            try {
+                tx = await this.props.contract.publish(this.props.match.params.x, this.props.match.params.y, chars.join("\n"), this.colour.value.replace('#', '0x'), attachment);
+            } catch (e) {
+                alert(e.message);
+            }
+            this.setState({transaction: tx});
+        })();
     }
 
     render() {
+        if (this.state.transaction){
+            alert(`Transaction with hash ${this.state.transaction.hash} sent`);
+            return <Redirect to="/"/>;
+        }
         return <div>
-            <h2>Publish content at {JSON.stringify(this.props.match.params)}</h2>
-            <Link to="/">Cancel</Link>
+            <h2>Publish content at {this.props.match.params.x}x{this.props.match.params.y}<span style={{float:'right'}}><Link
+                to="/">Close</Link></span> </h2>
+
 
 
 
@@ -56,14 +82,14 @@ export default class Publish extends React.Component {
             </label>
             <label>
                 Attachment
-                <input type="text" ref={input => this.attachment = input}/>
+                <input type="file" ref={input => this.attachment = input}/>
             </label>
             {this.state.error &&
             <div className="callout alert">
                 <p>{this.state.error}</p>
             </div>
             }
-            <button onClick={this.onPurchase} className="button">Publish</button>
+            <button onClick={this.onPublish} className="button">Publish</button>
         </div>
     }
 }

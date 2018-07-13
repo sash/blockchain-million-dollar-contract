@@ -47,6 +47,7 @@ contract MFC {
     event BoxBought(uint16 x, uint16 y, address buyer);
     event BoxPublished(uint16 x, uint16 y, address owner, bytes4 char, bytes3 colour, string attachment);
 
+
     constructor(uint _BOX_PRICE) public{
         owner = msg.sender;
         BOX_PRICE = _BOX_PRICE;
@@ -95,37 +96,10 @@ contract MFC {
 
     }
 
-    function boardBuyers() public view returns (address[BOARD_SIZE]){
-        return buyers;
-    }
 
-    function boardChars() public view returns (bytes4[BOARD_SIZE]){
-        bytes4[BOARD_SIZE] memory result;
-        for(uint i=0; i<BOARD_SIZE; i++){
-            result[i] = board[i].char;
-        }
-        return result;
-    }
-
-    function boardAttachments() public view returns (bool[BOARD_SIZE]){
-        bool[BOARD_SIZE] memory result;
-        for (uint i = 0; i < BOARD_SIZE; i++) {
-            uint index = board[i].attachmentIndex;
-            result[i] = index > 0;
-        }
-        return result;
-    }
-
-    function boardColours() public view returns (bytes3[BOARD_SIZE]){
-        bytes3[BOARD_SIZE] memory result;
-        for (uint i = 0; i < BOARD_SIZE; i++) {
-            result[i] = board[i].colour;
-        }
-        return result;
-    }
-
-
-    // The price of the block you want to buy is length * height * BOX_PRICE
+    /*
+     * The price of the block you want to buy is length * height * BOX_PRICE
+     */
     function buy(uint16 start_x, uint16 start_y, uint16 length, uint16 height)
     locationIsValid(start_x, start_y)
     priceIsValid(length.mul(height))
@@ -149,7 +123,7 @@ contract MFC {
 
     /**
      * Publish to a box you own. Because there are no string manipulation
-     * this method is cheaper to run if you want to buy one box then the publishBlock
+     * this method is cheaper to run if you want to buy one box then the publishBatch
      */
     function publish(uint16 x, uint16 y, bytes4 char, string attachment, bytes3 colour)
     locationIsValid(x, y)
@@ -171,7 +145,7 @@ contract MFC {
      * Separate with space to move right (aling the X axis).
      * Only one character per box is allowed!
      */
-    function publishBlock(uint16 start_x, uint16 start_y, string _chars, string attachment, bytes3 colour)
+    function publishBatch(uint16 start_x, uint16 start_y, string _chars, string attachment, bytes3 colour)
     locationIsValid(start_x, start_y)
     public {
         strings.slice memory _charsSlice = _chars.toSlice();
@@ -199,16 +173,18 @@ contract MFC {
             attachmentsIndex[attachment] = attachmentIndex;
         }
     }
+    event debug(string str);
     // Use by the publish block to handle one line of the input string
     function publishLine(uint16 start_x, uint16 start_y, strings.slice memory line, uint y, string attachment, bytes3 colour) private {
 
-        uint cnt = line.count(" ".toSlice()) + 1;
+        uint cnt = line.count("\t".toSlice()) + 1;
 
         for (uint x = 0; x < cnt; x ++) {
             uint index = getIndexAndCheckIfAllowedToPublish(x.add(start_x), y.add(start_y));
+            emit debug(line.toString());
 
-            strings.slice memory onechar = line.split(" ".toSlice());
-
+            strings.slice memory onechar = line.split("\t".toSlice());
+            emit debug(onechar.toString());
             bytes4 char = bytes4(stringToBytes32(onechar.toString()));
 
             require(StringUtils.utfStringLength(char) <= 1);

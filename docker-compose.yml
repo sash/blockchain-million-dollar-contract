@@ -14,3 +14,24 @@ services:
     entrypoint: node /app/node_modules/.bin/testrpc-sc --port 8555 -h 0.0.0.0 -l 0xfffffffffff -g 0x01
     ports:
        - 8555:8555
+
+  ipfs:
+      image: "ipfs/go-ipfs"
+      ports:
+        - 8081:8080
+        - 5001:5001
+        - 4001:4001
+      volumes:
+        - ./dist:/publish
+
+
+  app:
+    image: node
+    ports:
+      - 8082:80
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: node src/js/server.js
+    expose:
+      - 80

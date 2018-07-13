@@ -26,6 +26,7 @@ describe("Utils", () => {
     it('converts bytes to emoji string', () => {
         assert.equal('😁', helpers.toString("0xf09f9881"));
     });
+
 });
 contract('MFC', function(accounts) {
     const [firstAccount, secondAccount, thirdAccount] = accounts;
@@ -67,7 +68,7 @@ contract('MFC', function(accounts) {
         it('can listen for published events', async () => {
 
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
-            await mfc.publishBlock(0, 0, "A B", "", "0xff0000", {from: secondAccount});
+            await mfc.publishBatch(0, 0, "A\tB", "", "0xff0000", {from: secondAccount});
 
             let published = [];
             mfc.BoxPublished({fromBlock: 0, toBlock: 'latest'}, function (err, event) {
@@ -89,22 +90,7 @@ contract('MFC', function(accounts) {
             }
 
         });
-        it("can read the buyers array", async() => {
-            await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
-            await mfc.buy(5, 0, 2, 2, {from: thirdAccount, value: 4 * FINNEY});
-            let buyers = await mfc.boardBuyers();
-            assert.equal(100*100, buyers.length);
-            assert.equal(secondAccount,buyers[0] );
-            assert.equal(thirdAccount, buyers[105] );
-            assert.equal('0x0000000000000000000000000000000000000000', buyers[2] );
 
-        });
-        it("can read the board chars", async () => {
-            await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
-            await mfc.publishBlock(0, 0, "A B", "", "0xff0000", {from: secondAccount});
-            let board = await mfc.boardChars({gas: 7000000});
-            console.log(board);
-        });
     });
 
     describe("Buy",  () => {
@@ -218,7 +204,7 @@ contract('MFC', function(accounts) {
              */
 
             try {
-                await mfc.publishBlock(2, 0, "H", "", "0xff0000", {from: secondAccount}); // red
+                await mfc.publishBatch(2, 0, "H", "", "0xff0000", {from: secondAccount}); // red
                 assert.fail();
             } catch (e) {
                 assert.ok(/revert/.test(e.message));
@@ -233,7 +219,7 @@ contract('MFC', function(accounts) {
              */
 
             try {
-                await mfc.publishBlock(99, 99, "A B", "", "0xff0000", {from: secondAccount}); // C is outside of the board
+                await mfc.publishBatch(99, 99, "A\tB", "", "0xff0000", {from: secondAccount}); // C is outside of the board
                 assert.fail();
             } catch (e) {
                 assert.ok(/revert/.test(e.message));
@@ -241,14 +227,14 @@ contract('MFC', function(accounts) {
 
 
         });
-        it("can publish multiple box", async () => {
+        it("can publish multiple boxes", async () => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
             /**
              * uint16 x, uint16 y, bytes4 char, string attachment, bytes3 colour
              */
 
 
-            await mfc.publishBlock(0, 0, "A B\nC D", "", "0xff0000", {from: secondAccount}); // red
+            await mfc.publishBatch(0, 0, "A\tB\nC\tD", "", "0xff0000", {from: secondAccount}); // red
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("A", helpers.toString(char));
@@ -266,7 +252,7 @@ contract('MFC', function(accounts) {
         it("can publish cyrillic", async () => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
 
-            await mfc.publishBlock(0, 0, "Г В\nЯ Ж", "", "0xff0000", {from: secondAccount}); // red
+            await mfc.publishBatch(0, 0, "Г\tВ\nЯ\tЖ", "", "0xff0000", {from: secondAccount}); // red
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("Г", helpers.toString(char));
@@ -284,7 +270,7 @@ contract('MFC', function(accounts) {
         it("can publish 3-byte utf8", async () => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
 
-            await mfc.publishBlock(0, 0, "€", "", "0xff0000", {from: secondAccount}); // red
+            await mfc.publishBatch(0, 0, "€", "", "0xff0000", {from: secondAccount}); // red
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("€", helpers.toString(char));
@@ -295,7 +281,7 @@ contract('MFC', function(accounts) {
         it("can publish emojis", async () => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
 
-            await mfc.publishBlock(0, 0, "😁 😂\n😍 😝", "", "0xff0000", {from: secondAccount}); // red
+            await mfc.publishBatch(0, 0, "😁\t😂\n😍\t😝", "", "0xff0000", {from: secondAccount}); // red
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("😁", helpers.toString(char));
@@ -312,7 +298,7 @@ contract('MFC', function(accounts) {
         });
         it("can publish malformated string", async() => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
-            await mfc.publishBlock(0, 0, "A ", "", "0xff0000", {from: secondAccount}); // empty string at the end of the published string
+            await mfc.publishBatch(0, 0, "A\t", "", "0xff0000", {from: secondAccount}); // empty string at the end of the published string
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("A", helpers.toString(char));
@@ -322,7 +308,7 @@ contract('MFC', function(accounts) {
         it('can\'t publish two chars in a box', async() => {
             await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
             try {
-                await mfc.publishBlock(0, 0, "AB C", "", "0xff0000", {from: secondAccount}); // Attempt to post 2 chars in the first box
+                await mfc.publishBatch(0, 0, "AB\tC", "", "0xff0000", {from: secondAccount}); // Attempt to post 2 chars in the first box
                 assert.fail();
             }catch(e){
                 assert.ok(/revert/.test(e.message));
@@ -343,6 +329,24 @@ contract('MFC', function(accounts) {
             let [char, attachment, colour, buyer] = await mfc.read(0, 0);
 
             assert.equal("", helpers.toString(char));
+
+        });
+        it('can publish spaces using batch', async () => {
+            await mfc.buy(0, 0, 2, 2, {from: secondAccount, value: 4 * FINNEY});
+
+            await mfc.publishBatch(0, 0, " \tB\nC\t ", "", "0xff0000", {from: secondAccount}); // Attempt to post 2 chars in the first box
+
+            let [char, attachment, colour, buyer] = await mfc.read(0, 0);
+            assert.equal(" ", helpers.toString(char));
+
+            [char, attachment, colour, buyer] = await mfc.read(1, 0);
+            assert.equal("B", helpers.toString(char));
+
+            [char, attachment, colour, buyer] = await mfc.read(0, 1);
+            assert.equal("C", helpers.toString(char));
+
+            [char, attachment, colour, buyer] = await mfc.read(1, 1);
+            assert.equal(" ", helpers.toString(char));
 
         });
     });

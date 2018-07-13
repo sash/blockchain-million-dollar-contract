@@ -1,11 +1,34 @@
 $size: 11px;
+
+.legend{
+  span{
+    display: inline-block;
+    height: $size;
+    width: $size;
+    border: 1px solid lightgray;
+    font-size: $size;
+    line-height: $size;
+    &.free{
+      background-color: lightgreen;
+    }
+    &.bought {
+      background-color: white;
+    }
+    &.owned {
+      background-color: palegoldenrod;
+    }
+    &.selected {
+      background-color: yellow;
+    }
+  }
+}
 .Grid {
+  border: 1px solid lightgray;
   position: relative;
   width: $size*100;
   height: $size*100;
   display: flex;
   flex-direction: column;
-  border: 1px solid lightblue;
   &__loading{
     display: flex;
     position: absolute;
@@ -34,26 +57,26 @@ $size: 11px;
     cursor: pointer;
     width: $size;
     height: $size;
-    font-size: $size;
+    font-size: $size - 2px;
     //border: 1px solid red;
     box-sizing: border-box;
     align-content: center;
     text-align: center;
     line-height: $size;
     background-color: lightgreen;
-    border: 1px solid #eeeeee;
+    border: 1px solid #fff;
 
     &--bought {
       background-color: white;
-      border: 0px solid transparent;
+      border: 0 solid transparent;
     }
     &--owned{
-      background-color: pink;
-      border: 1px solid #eeeeee;
+      background-color: palegoldenrod;
+      border: 1px solid #fff;
     }
     &--selected {
       background-color: yellow;
-      border: 1px solid #eeeeee;
+      border: 1px solid #fff;
     }
   }
 }

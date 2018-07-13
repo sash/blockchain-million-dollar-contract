@@ -2,13 +2,15 @@ import React from "react";
 import {HashRouter as Router, Route, Link} from "react-router-dom";
 import Grid from "./Grid.js";
 import Publish from './Publish';
+import {utils} from 'ethers';
 
 class App extends React.Component{
     constructor(props){
         super(props)
-        this.state = {balance: 0}
+        this.state = {balance: 0, boxPrice: false}
         // let {provider, account} = props;
         this.props.provider.getBalance().then(balance => (this.setState({balance: balance})));
+        this.props.contract.boxPrice().then(boxPrice => (this.setState({boxPrice: boxPrice})));
     }
 
     componentDidUpdate(prevProps){
@@ -20,7 +22,7 @@ class App extends React.Component{
     render(){
         return <Router>
             <div>
-                {!this.props.ethBrowser &&
+                {!this.props.provider.isEthersEnabledBrowser() &&
                 <div className="callout alert">
                     <h5>This browser is not ethereum enabled!</h5>
                     <p>Please use Google Chrome + MetaMask, Mist or Parity</p>
@@ -28,11 +30,12 @@ class App extends React.Component{
                 {this.props.account &&
                 <div>{this.props.account &&
                     <span>
+                <span className="">Your account:</span>&nbsp;
                 <span className="label primary">{this.props.account}</span>&nbsp;
-                <span className="label secondary">{this.state.balance} tETH</span>
+                <span className="label secondary">{this.state.balance} ETH</span>
                     </span>
                 }</div>}
-                {!this.props.account && this.props.ethBrowser &&
+                {!this.props.account && this.props.provider.isEthersEnabledBrowser() &&
                 <div className="callout warning">
                     <h5>Your account is locked!</h5>
                     <p>Please unlock your account in order to use the app</p>
@@ -41,60 +44,44 @@ class App extends React.Component{
 
 
                 <hr/>
-
-                <Route exact path="/" render={routeProps => <Home {...routeProps} contract={this.props.contract} account={this.props.account}/>}/>
                 <Route path="/publish/:x/:y/:length/:height"
                        render={routeProps =>
                            <Publish {...routeProps}
-                                 contract={this.props.contract}
-                                 account={this.props.account}
+                                    contract={this.props.contract}
+                                    account={this.props.account}
                            />}/>
-                <Route path="/topics" component={Topics}/>
+                <Home contract={this.props.contract} account={this.props.account}
+                      provider={this.props.provider} boxPrice={this.state.boxPrice}/>
+
             </div>
         </Router>
 
     }
 }
 
-const Home = ({contract, account}) => (
+const Home = ({contract, account, provider, boxPrice}) => (
     <div>
-        <p>Buy your blocks of the blockchain history! Available blocks are highlighted in green! Your purchased blocks are ping and you can publish content to them</p>
+        <p>Buy your blocks of the blockchain history! Greens are still available! Hurry up!</p>
+
+        <p>Box price is <span className="label alert">{boxPrice && utils.formatEther(boxPrice)} ETH</span></p>
+
         <div style={{display: 'flex', justifyContent:'center'}}>
-        <Grid size={100} contract={contract} account={account}/>
+        <Grid size={100} contract={contract} account={account} provider={provider}/>
+
         </div>
-
+        <div>
+            Legend:<br/>
+            <ul className="legend">
+                <li><span className="free"></span> - The box is up for sale!</li>
+                <li><span className="bought"></span> - The box is sold!</li>
+                <li><span className="owned"> </span> - The box is sold and you are the owner! Congrats!</li>
+                <li><span className="selected"> </span> - The box is selected. Choose another one to form a block!
+                </li>
+            </ul>
+        </div>
     </div>
 );
 
 
-const Topics = ({match}) => (
-    <div>
-        <h2>Topics</h2>
-        <ul>
-            <li>
-                <Link to={`${match.url}/rendering`}>Rendering with React</Link>
-            </li>
-            <li>
-                <Link to={`${match.url}/components`}>Components</Link>
-            </li>
-            <li>
-                <Link to={`${match.url}/props-v-state`}>Props v. State</Link>
-            </li>
-        </ul>
-
-        <Route path={`${match.url}/:topicId`} component={Topic}/>
-        <Route
-            exact
-            path={match.url}
-            render={() => <h3>Please select a topic.</h3>}
-        />
-    </div>
-);
-
-const Topic = ({match}) => (
-    <div>
-        <h3>{match.params.topicId}</h3>
-    </div>
-);
 
 export default App;
