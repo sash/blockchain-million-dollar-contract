@@ -17,7 +17,7 @@ module.exports = {
     network: 'private',
     MFC:{
         address: {
-            private: '0xb0c7a4b081d8369a389ac90756b95d19d0b5c144',
+            private: '0x042fca9b16745fe543ffbb01743c6247b1ac0739',
             ropsten: '0xaf7ca8d710b2304089c2265c44b5210a486a063b',
         },
         block: {

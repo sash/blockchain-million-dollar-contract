@@ -173,7 +173,6 @@ contract MFC {
             attachmentsIndex[attachment] = attachmentIndex;
         }
     }
-    event debug(string str);
     // Use by the publish block to handle one line of the input string
     function publishLine(uint16 start_x, uint16 start_y, strings.slice memory line, uint y, string attachment, bytes3 colour) private {
 
@@ -181,10 +180,8 @@ contract MFC {
 
         for (uint x = 0; x < cnt; x ++) {
             uint index = getIndexAndCheckIfAllowedToPublish(x.add(start_x), y.add(start_y));
-            emit debug(line.toString());
 
             strings.slice memory onechar = line.split("\t".toSlice());
-            emit debug(onechar.toString());
             bytes4 char = bytes4(stringToBytes32(onechar.toString()));
 
             require(StringUtils.utfStringLength(char) <= 1);

@@ -1,26 +1,12 @@
-# blockchain-million-finney-dapp
+# Million Finney DApp
 http://www.milliondollarhomepage.com clone on the blockchain
 
-
-# DApp
-1. Viewer
-1.1. Zoomable
-1.2. Display linked content on hover + address of the boyer. Click to go to the linked content
-1.3 Visualize free boxs with alternative background and make it clickable - go to the buy process
-
-2. Buy
-2.1. Choose starting grid position
-2.2. Type in the message (limited by the available space)
-2.3. Choose a file to upload to ipfs (or privide a hash if you already uploaded one - for example if you want to have a website linked)
-2.4. Choose colour.
-
-3. Preview the purchase (checkout)
-3.1. Preview the grid after your purchase
-3.2. Format transaction to purchase the space. Use single transaction even if you want to buy more boxes!
+# Getting started
+* [ ] Install [docker](https://www.docker.com/community-edition)
+* [ ] Install node + yarn (a better npm alternative)
+* [ ] Install truffle
 
 
-
-# Install
 * `docker-compose up -d`
 * `yarn ipfs-cors`
 
@@ -38,19 +24,33 @@ A clone of http://www.milliondollarhomepage.com/. 1000x1000 pixels for sale each
 Instead of offering pixes, you buy boxes that you can control the color of and you can use a single UTF8 character in each box. You can also attach a file (stored on ipfs) that will be shown when the block is clicked.
 
 Take it for a spin:
-1. Purchase a new block of boxes by selecting it
-2. Publish content (use the ipfs PFD as attachment)
+1. Open chrome + safari. Leave the safari open to observe changes.
+2. Purchase a new block of boxes by selecting it. The price of the block is set at 0.1 ether (in order for the autor to get 1M finney!). Look at the account of the contract author - it is credited!
+3. Publish content (use PFD as attachment). The attachment is visible by everyone.
 
 Look at che contact:
-1. The storage: ...
-2. The methods: buy, purchase, purchaseBlock, and the debug only read
-3. The events: BoxBought, BoxPurchased
+1. The storage: array of Box structs representing the board. array of buyers
+2. The methods: buy, publish, publishBatch, and the debug only read
+3. The events: BoxBought, BoxPurchased used for creating the board in web
+
+What we have:
+* 100% unit test code coverage of the contract.
+* Pure frontend app implemented in ReactJS, built with WebPack. Can be distributed via IPFS. Lets do that now!
+* Ethers.js
+* Metamask integration (no custom wallet)
+* String manipulation (using strings lib)
+* Optimizations: Colours are stored as `bytes3` and characters are stored as `bytes4`. Attachments are expected to be the same for many boxes, so they are optimized too.
 
 
-# TODO
-√ Use \t as separator for the batch publish
-√ Extract IPFS interaction into separate component
-√ Publish the website on IPFS
-* Test remove each event for buying and replace with a single event and watch the gas cost (if it goes down significantly)
-* Run the coverage test again and generate the report to be ready for view
-* Refactor the view component to separate out the logic from the views
+Known limitations:
+* Publishing and buying large blocks runs out of gas. Buy can be refactored to store only the purchased blocks (instead of boxes). That will reduce the gas for buy.
+* I had planned to use pure JS implementation of zip and allow for zipped static webpages to be published via the attachment. The concept will work.
+
+# Demo preparations
+* `docker-compose restart` & copy private keys of ganache
+* `truffle migrate` & copy contract address
+* paste contract address in `src/js/config.js`
+* `yarn build`
+* `yarn ipfs-publish` & copy the hash to the URL `https://ipfs.io/ipfs/XXX`
+* Open chrome & import the top 3 accounts
+* Open safari for view-only comparison

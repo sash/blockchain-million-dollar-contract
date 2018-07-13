@@ -50,7 +50,7 @@ class App extends React.Component{
                                     contract={this.props.contract}
                                     account={this.props.account}
                            />}/>
-                <Home contract={this.props.contract} account={this.props.account}
+                <Main contract={this.props.contract} account={this.props.account}
                       provider={this.props.provider} boxPrice={this.state.boxPrice}/>
 
             </div>
@@ -59,13 +59,13 @@ class App extends React.Component{
     }
 }
 
-const Home = ({contract, account, provider, boxPrice}) => (
+const Main = ({contract, account, provider, boxPrice}) => (
     <div>
         <p>Buy your blocks of the blockchain history! Greens are still available! Hurry up!</p>
 
         <p>Box price is <span className="label alert">{boxPrice && utils.formatEther(boxPrice)} ETH</span></p>
 
-        <div style={{display: 'flex', justifyContent:'center'}}>
+        <div style={{overflow: 'auto'}}>
         <Grid size={100} contract={contract} account={account} provider={provider}/>
 
         </div>
