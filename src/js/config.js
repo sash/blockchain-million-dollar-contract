@@ -16,7 +16,7 @@
  */
 
 module.exports = {
-    network: 'ropsten',
+    network: 'private',
     MFC:{
         address: {
             private: '0x20b3b1a385519e28149f2ad1a08bc746e392ce8d',
