@@ -34,6 +34,7 @@
     "build": "webpack --mode=development",
     "watch": "webpack --mode=development --watch",
     "ipfs-publish": "webpack --mode=development && docker-compose exec ipfs ipfs add -r /publish",
+    "ipfs-publish-ropsten": "docker-compose exec ipfs ipfs add -r /publish-ropsten",
     "ipfs-cors": "docker-compose exec ipfs ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001 && docker-compose exec ipfs ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]' && docker-compose exec ipfs ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"GET\", \"POST\"]' && docker-compose restart ipfs"
   },
   "dependencies": {

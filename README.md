@@ -49,8 +49,9 @@ Instead of offering pixes, you buy boxes that you can control the color of and y
 * I had planned to use pure JS implementation of zip and allow for zipped static webpages to be published via the attachment. The concept will work.
 
 ## We are live!
+Go to https://bit.ly/2L7Mo5y and boy your space on Ropsten now!
 
-Go to https://bit.ly/2NclFSx and start publishing to Ropsten now!
+The contract source is uploaded and can be reviewed at https://ropsten.etherscan.io/address/0xa10fbb3fbdf0fe9d40cc546d281a40b2679cdbdb#code
 
 # Demo preparations
 * `docker-compose restart` & copy private keys of ganache

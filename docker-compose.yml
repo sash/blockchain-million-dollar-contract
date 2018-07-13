@@ -23,6 +23,7 @@ services:
         - 4001:4001
       volumes:
         - ./dist:/publish
+        - ./dist-ropsten:/publish-ropsten
 
 
   app:

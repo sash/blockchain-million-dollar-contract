@@ -9,7 +9,7 @@ $size: 11px;
     font-size: $size;
     line-height: $size;
     &.free{
-      background-color: lightgreen;
+      background-color: #cdffd7;
     }
     &.bought {
       background-color: white;
@@ -63,7 +63,7 @@ $size: 11px;
     align-content: center;
     text-align: center;
     line-height: $size;
-    background-color: lightgreen;
+    background-color: #cdffd7;
     border: 1px solid #fff;
     font-family: monospace, monospace;
 
